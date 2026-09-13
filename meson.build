@@ -45,6 +45,7 @@ configure_file(
 add_project_arguments([
   '-DAPPLICATION_ID="org.gnome.Hci"',
   '-I' + meson.project_build_root(),
+  '-Wno-error=deprecated-declarations',
 ], language: 'c')
 
 subdir('po')

@@ -1,7 +1,7 @@
 #include "hci-preferences-window.h"
 
 struct _HciPreferencesWindow {
-    AdwPreferencesWindow parent_instance;
+    AdwPreferencesDialog parent_instance;
     AdwSpinRow *spin_sampling_interval;
     AdwSwitchRow *switch_sqlite_logging;
     AdwSwitchRow *switch_enforce_ac;
@@ -9,7 +9,7 @@ struct _HciPreferencesWindow {
     GSettings *settings;
 };
 
-G_DEFINE_FINAL_TYPE(HciPreferencesWindow, hci_preferences_window, ADW_TYPE_PREFERENCES_WINDOW)
+G_DEFINE_FINAL_TYPE(HciPreferencesWindow, hci_preferences_window, ADW_TYPE_PREFERENCES_DIALOG)
 
 static void
 hci_preferences_window_dispose(GObject *object)
@@ -67,10 +67,9 @@ hci_preferences_window_init(HciPreferencesWindow *self)
 HciPreferencesWindow *
 hci_preferences_window_new(GtkWindow *parent)
 {
+    (void)parent;
     return g_object_new(
         HCI_TYPE_PREFERENCES_WINDOW,
-        "transient-for", parent,
-        "modal", TRUE,
         NULL
     );
 }

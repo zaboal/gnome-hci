@@ -31,12 +31,20 @@ jobs:
 
       - name: Prepare build tree & source tarball
         run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           rpmdev-setuptree
           VERSION=$(grep -m1 "version:" meson.build | cut -d"'" -f2)
           echo "Building source tarball for version ${VERSION}..."
-          git archive --format=tar.gz --prefix="gnome-hci-${VERSION}/" -o "gnome-hci-${VERSION}.tar.gz" HEAD
-          mv "gnome-hci-${VERSION}.tar.gz" ~/rpmbuild/SOURCES/
+          git config --global --add safe.directory "*" || true
+          if [ -d .git ] && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            git archive --format=tar.gz --prefix="gnome-hci-${VERSION}/" -o ~/rpmbuild/SOURCES/gnome-hci-${VERSION}.tar.gz HEAD
+          else
+            STAGING_DIR=$(mktemp -d)
+            mkdir -p "${STAGING_DIR}/gnome-hci-${VERSION}"
+            cp -r . "${STAGING_DIR}/gnome-hci-${VERSION}/"
+            rm -rf "${STAGING_DIR}/gnome-hci-${VERSION}/.git"
+            tar -czf ~/rpmbuild/SOURCES/gnome-hci-${VERSION}.tar.gz -C "${STAGING_DIR}" "gnome-hci-${VERSION}"
+            rm -rf "${STAGING_DIR}"
+          fi
           cp packaging/gnome-hci.spec ~/rpmbuild/SPECS/
 
       - name: Build Source RPM (SRPM)

@@ -21,7 +21,7 @@ on_action_preferences(GSimpleAction *action, GVariant *parameter, gpointer user_
     GtkWindow *active_window = gtk_application_get_active_window(GTK_APPLICATION(self));
 
     HciPreferencesWindow *prefs = hci_preferences_window_new(active_window);
-    gtk_window_present(GTK_WINDOW(prefs));
+    adw_dialog_present(ADW_DIALOG(prefs), active_window ? GTK_WIDGET(active_window) : NULL);
 }
 
 static void
@@ -64,9 +64,9 @@ on_action_quit(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 }
 
 static const GActionEntry app_actions[] = {
-    { "preferences", on_action_preferences, NULL, NULL, NULL },
-    { "about", on_action_about, NULL, NULL, NULL },
-    { "quit", on_action_quit, NULL, NULL, NULL },
+    { "preferences", on_action_preferences, NULL, NULL, NULL, { 0, 0, 0 } },
+    { "about", on_action_about, NULL, NULL, NULL, { 0, 0, 0 } },
+    { "quit", on_action_quit, NULL, NULL, NULL, { 0, 0, 0 } },
 };
 
 static void
