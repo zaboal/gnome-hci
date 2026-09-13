@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=GNOME HCI
+GenericName=Hardware Control Interface
+Comment=Hardware Control and Telemetry Interface for Ivy Bridge & Wayland
+Exec=gnome-hci
+Icon=org.gnome.Hci
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;HardwareSettings;
+Keywords=ThinkPad;Ivy Bridge;Fan;Telemetry;Performance;Wayland;
+StartupNotify=true
+DBusActivatable=true
+X-Purism-FormFactor=Workstation;Mobile;

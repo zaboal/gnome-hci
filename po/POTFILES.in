@@ -1,0 +1,11 @@
+data/org.gnome.Hci.desktop.in
+data/org.gnome.Hci.metainfo.xml.in
+data/resources/ui/window.ui
+data/resources/ui/preferences.ui
+src/main.c
+src/hci-application.c
+src/hci-window.c
+src/hci-preferences-window.c
+src/hci-gauge.c
+src/hci-telemetry-model.c
+src/hci-database.c

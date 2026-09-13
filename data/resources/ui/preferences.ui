@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.5"/>
+  <template class="HciPreferencesWindow" parent="AdwPreferencesWindow">
+    <property name="title" translatable="yes">Preferences</property>
+    <property name="default-width">600</property>
+    <property name="default-height">500</property>
+
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">General</property>
+        <property name="icon-name">preferences-system-symbolic</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Hardware Telemetry</property>
+            <property name="description" translatable="yes">Telemetry engine polling frequencies and storage</property>
+
+            <child>
+              <object class="AdwSpinRow" id="spin_sampling_interval">
+                <property name="title" translatable="yes">Sampling Interval (ms)</property>
+                <property name="subtitle" translatable="yes">Sub-second hardware polling frequency</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">100</property>
+                    <property name="upper">10000</property>
+                    <property name="step-increment">100</property>
+                    <property name="page-increment">500</property>
+                    <property name="value">1000</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="switch_sqlite_logging">
+                <property name="title" translatable="yes">SQLite Telemetry Logging</property>
+                <property name="subtitle" translatable="yes">Record time-series metrics to local database</property>
+                <property name="active">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Power &amp; Thermals</property>
+            <property name="description" translatable="yes">ThinkPad T430 system policy enforcement</property>
+
+            <child>
+              <object class="AdwSwitchRow" id="switch_enforce_ac">
+                <property name="title" translatable="yes">Enforce AC Latency Profile</property>
+                <property name="subtitle" translatable="yes">Auto-activate latency-performance profile on boot</property>
+                <property name="active">true</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="switch_sata_lpm">
+                <property name="title" translatable="yes">SATA LPM Max Performance</property>
+                <property name="subtitle" translatable="yes">Prevent link power-management SSD latency spikes</property>
+                <property name="active">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+      </object>
+    </child>
+  </template>
+</interface>

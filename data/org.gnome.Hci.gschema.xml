@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-hci">
+  <schema id="org.gnome.Hci" path="/org/gnome/hci/">
+    <key name="window-width" type="i">
+      <default>950</default>
+      <summary>Window width</summary>
+      <description>Default window width in pixels</description>
+    </key>
+    <key name="window-height" type="i">
+      <default>680</default>
+      <summary>Window height</summary>
+      <description>Default window height in pixels</description>
+    </key>
+    <key name="is-maximized" type="b">
+      <default>false</default>
+      <summary>Window maximized state</summary>
+      <description>Whether the window starts maximized</description>
+    </key>
+    <key name="latency-performance-mode" type="b">
+      <default>true</default>
+      <summary>Latency-performance profile state</summary>
+      <description>Enforces tuned-adm latency-performance profile on AC power</description>
+    </key>
+    <key name="fan-boost" type="b">
+      <default>false</default>
+      <summary>Fan boost state</summary>
+      <description>ThinkPad fan level disengaged for maximum cooling without throttling</description>
+    </key>
+    <key name="sampling-interval-ms" type="u">
+      <default>1000</default>
+      <summary>Telemetry sampling interval</summary>
+      <description>Hardware metrics sampling interval in milliseconds</description>
+    </key>
+  </schema>
+</schemalist>

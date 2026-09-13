@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.gnome.Hci</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>GNOME HCI</name>
+  <summary>Hardware Control and Telemetry Interface for Ivy Bridge &amp; Wayland</summary>
+  <description>
+    <p>
+      GNOME HCI provides hardware control, microarchitectural telemetry monitoring,
+      thermal and fan regulation, and Wayland display actuation tailored for Linux systems.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>High-frequency CPU telemetry sampling and microarchitectural IPC tracking</li>
+      <li>ThinkPad ACPI thermal lock and fan acoustic boost control</li>
+      <li>Non-root Wayland display backlight and color temperature actuation via Mutter D-Bus</li>
+      <li>Local SQLite telemetry logging and historical metrics visualization</li>
+    </ul>
+  </description>
+  <url type="homepage">https://github.com/zaboal/gnome-hci</url>
+  <url type="bugtracker">https://github.com/zaboal/gnome-hci/issues</url>
+  <url type="vcs-browser">https://github.com/zaboal/gnome-hci</url>
+  <developer id="su.zba">
+    <name>Bogdan Zažigin</name>
+  </developer>
+  <launchable type="desktop-id">org.gnome.Hci.desktop</launchable>
+  <releases>
+    <release version="0.1.0" date="2026-09-13">
+      <description>
+        <p>Initial skeleton release with GTK4/Libadwaita interface, GtkSnapshot custom rendering, and SQLite telemetry logging.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>

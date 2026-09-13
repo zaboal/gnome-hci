@@ -1,0 +1,30 @@
+# Build directories
+build/
+builddir/
+subprojects/
+.flatpak-builder/
+_flatpak_build/
+
+# Compilation artifacts
+*.o
+*.so
+*.a
+*.p
+*.gcda
+*.gcno
+compile_commands.json
+
+# Generated files
+data/org.gnome.Hci.desktop
+data/org.gnome.Hci.metainfo.xml
+data/resources/gnome-hci-resources.c
+data/resources/gnome-hci-resources.h
+config.h
+
+# Editor & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.5"/>
+  <template class="HciWindow" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">GNOME HCI</property>
+    <property name="default-width">950</property>
+    <property name="default-height">680</property>
+    <property name="content">
+      <object class="AdwNavigationSplitView" id="split_view">
+        <property name="min-sidebar-width">240</property>
+        <property name="max-sidebar-width">320</property>
+        <property name="sidebar">
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Hardware Controls</property>
+            <property name="tag">sidebar</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">true</property>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="GtkScrolledWindow">
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="child">
+                      <object class="GtkListBox" id="sidebar_list">
+                        <style>
+                          <class name="navigation-sidebar"/>
+                        </style>
+                        <child>
+                          <object class="AdwActionRow" id="row_dashboard">
+                            <property name="title" translatable="yes">Dashboard &amp; Telemetry</property>
+                            <property name="icon-name">utilities-system-monitor-symbolic</property>
+                            <property name="activatable">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="row_thermals">
+                            <property name="title" translatable="yes">Thermals &amp; Fan</property>
+                            <property name="icon-name">weather-clear-symbolic</property>
+                            <property name="activatable">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="row_display">
+                            <property name="title" translatable="yes">Display &amp; Ambient</property>
+                            <property name="icon-name">display-brightness-symbolic</property>
+                            <property name="activatable">true</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+        <property name="content">
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Hardware Dashboard</property>
+            <property name="tag">content</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <child type="end">
+                      <object class="GtkMenuButton">
+                        <property name="icon-name">open-menu-symbolic</property>
+                        <property name="menu-model">primary_menu</property>
+                        <property name="tooltip-text" translatable="yes">Main Menu</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="GtkScrolledWindow">
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="child">
+                      <object class="AdwClamp">
+                        <property name="maximum-size">800</property>
+                        <property name="tightening-threshold">600</property>
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">24</property>
+                            <property name="margin-top">24</property>
+                            <property name="margin-bottom">24</property>
+                            <property name="margin-start">24</property>
+                            <property name="margin-end">24</property>
+
+                            <!-- Custom GtkSnapshot Metric Gauge -->
+                            <child>
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="halign">center</property>
+                                <property name="spacing">16</property>
+                                <child>
+                                  <object class="HciGauge" id="cpu_gauge">
+                                    <property name="fraction">0.75</property>
+                                    <property name="label" translatable="yes">Ivy Bridge IPC</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+
+                            <!-- AdwPreferencesGroup for System Controls -->
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Hardware Invariants &amp; Controls</property>
+                                <property name="description" translatable="yes">ThinkPad T430 AC mains power &amp; latency enforcement</property>
+                                <child>
+                                  <object class="AdwSwitchRow" id="latency_switch">
+                                    <property name="title" translatable="yes">Latency-Performance Mode</property>
+                                    <property name="subtitle" translatable="yes">tuned-adm profile latency-performance (SATA LPM max_performance)</property>
+                                    <property name="active">true</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow" id="fan_boost_switch">
+                                    <property name="title" translatable="yes">Acoustic Fan Disengage</property>
+                                    <property name="subtitle" translatable="yes">Unconstrained cooling to sustain 3.3 GHz Turbo Boost</property>
+                                    <property name="active">false</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+
+                            <!-- Modern GtkColumnView Telemetry Section -->
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Silicon &amp; Scheduler Telemetry</property>
+                                <property name="description" translatable="yes">Real-time microarchitectural telemetry via GtkColumnView</property>
+                                <child>
+                                  <object class="GtkScrolledWindow">
+                                    <property name="min-content-height">200</property>
+                                    <property name="has-frame">true</property>
+                                    <property name="child">
+                                      <object class="GtkColumnView" id="telemetry_view">
+                                        <style>
+                                          <class name="telemetry-columnview"/>
+                                        </style>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_About GNOME HCI</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

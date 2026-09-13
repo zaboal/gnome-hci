@@ -1,0 +1,59 @@
+name: COPR Packaging & Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  copr-build:
+    name: Build SRPM & Submit to COPR
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install packaging tools
+        run: |
+          dnf install -y \
+            rpm-build \
+            rpmdevtools \
+            copr-cli \
+            meson \
+            ninja-build \
+            git
+
+      - name: Prepare build tree & source tarball
+        run: |
+          mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          VERSION="0.1.0"
+          git archive --format=tar.gz --prefix="gnome-hci-${VERSION}/" -o "rpmbuild/SOURCES/gnome-hci-${VERSION}.tar.gz" HEAD
+          cp packaging/gnome-hci.spec rpmbuild/SPECS/
+
+      - name: Build Source RPM (SRPM)
+        run: |
+          rpmbuild -bs --define "_topdir $(pwd)/rpmbuild" rpmbuild/SPECS/gnome-hci.spec
+
+      - name: Upload SRPM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gnome-hci-srpm
+          path: rpmbuild/SRPMS/*.src.rpm
+
+      - name: Submit to Fedora COPR (zaboal/t430-optimized)
+        if: env.COPR_CONFIG != ''
+        env:
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+        run: |
+          mkdir -p ~/.config
+          echo "$COPR_CONFIG" > ~/.config/copr
+          SRPM_FILE=$(find rpmbuild/SRPMS -name "*.src.rpm" | head -n 1)
+          copr-cli build zaboal/t430-optimized "$SRPM_FILE" --nowait
