@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'ci/**' ]
   pull_request:
     branches: [ main ]
 
@@ -20,33 +20,40 @@ jobs:
       - name: Install build dependencies
         run: |
           dnf install -y \
+            gcc \
+            clang \
             meson \
             ninja-build \
-            gcc \
             git \
-            desktop-file-utils \
-            libappstream-glib \
-            appstream \
             gtk4-devel \
             libadwaita-devel \
             glib2-devel \
             cairo-devel \
-            sqlite-devel
+            sqlite-devel \
+            desktop-file-utils \
+            libappstream-glib \
+            appstream \
+            gettext
 
       - name: Configure Meson
         run: meson setup build -Dwarning_level=2 -Dwerror=true
 
       - name: Compile
-        run: meson compile -C build
+        run: meson compile -C build --verbose
 
       - name: Run Unit & Integration Tests
         run: meson test -C build --verbose
 
       - name: Validate Desktop File
-        run: desktop-file-validate data/org.gnome.Hci.desktop.in
+        run: |
+          # desktop-file-validate data/org.gnome.Hci.desktop.in requires .desktop extension; validate compiled build/data output
+          desktop-file-validate build/data/org.gnome.Hci.desktop
 
-      - name: Validate Appstream Metadata
-        run: appstreamcli validate data/org.gnome.Hci.metainfo.xml.in || true
+      - name: Validate AppStream Metadata
+        run: |
+          appstreamcli validate --no-net data/org.gnome.Hci.metainfo.xml.in
+          appstreamcli validate --no-net build/data/org.gnome.Hci.metainfo.xml
 
       - name: Validate GSettings Schema
-        run: glib-compile-schemas --strict --dry-run data/
+        run: glib-compile-schemas --strict data/
+
