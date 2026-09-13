@@ -2,10 +2,7 @@ name: COPR Packaging & Build
 
 on:
   push:
-    tags:
-      - 'v*'
-    branches:
-      - main
+    branches: [ main, 'ci/**' ]
   workflow_dispatch:
 
 jobs:
@@ -21,39 +18,51 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install packaging tools
+      - name: Install dependencies
         run: |
           dnf install -y \
             rpm-build \
             rpmdevtools \
             copr-cli \
-            meson \
-            ninja-build \
-            git
+            git \
+            tar \
+            gzip \
+            coreutils
 
       - name: Prepare build tree & source tarball
         run: |
-          mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-          VERSION="0.1.0"
-          git archive --format=tar.gz --prefix="gnome-hci-${VERSION}/" -o "rpmbuild/SOURCES/gnome-hci-${VERSION}.tar.gz" HEAD
-          cp packaging/gnome-hci.spec rpmbuild/SPECS/
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          rpmdev-setuptree
+          VERSION=$(grep -m1 "version:" meson.build | cut -d"'" -f2)
+          echo "Building source tarball for version ${VERSION}..."
+          git archive --format=tar.gz --prefix="gnome-hci-${VERSION}/" -o "gnome-hci-${VERSION}.tar.gz" HEAD
+          mv "gnome-hci-${VERSION}.tar.gz" ~/rpmbuild/SOURCES/
+          cp packaging/gnome-hci.spec ~/rpmbuild/SPECS/
 
       - name: Build Source RPM (SRPM)
         run: |
-          rpmbuild -bs --define "_topdir $(pwd)/rpmbuild" rpmbuild/SPECS/gnome-hci.spec
+          rpmbuild -bs ~/rpmbuild/SPECS/gnome-hci.spec
+          ls -lh ~/rpmbuild/SRPMS/
 
       - name: Upload SRPM artifact
         uses: actions/upload-artifact@v4
         with:
           name: gnome-hci-srpm
-          path: rpmbuild/SRPMS/*.src.rpm
+          path: ~/rpmbuild/SRPMS/*.src.rpm
 
-      - name: Submit to Fedora COPR (zaboal/t430-optimized)
-        if: env.COPR_CONFIG != ''
+      - name: Submit SRPM to COPR
         env:
           COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
         run: |
-          mkdir -p ~/.config
-          echo "$COPR_CONFIG" > ~/.config/copr
-          SRPM_FILE=$(find rpmbuild/SRPMS -name "*.src.rpm" | head -n 1)
-          copr-cli build zaboal/t430-optimized "$SRPM_FILE" --nowait
+          if [ -n "$COPR_CONFIG" ]; then
+            echo "COPR_CONFIG secret is configured. Preparing ~/.config/copr..."
+            mkdir -p ~/.config
+            echo "$COPR_CONFIG" > ~/.config/copr
+            chmod 600 ~/.config/copr
+            echo "Dispatching cloud build to Fedora COPR (zaboal/t430-optimized)..."
+            copr-cli build zaboal/t430-optimized ~/rpmbuild/SRPMS/*.src.rpm --nowait
+            echo "COPR build successfully triggered."
+          else
+            echo "Notice: COPR_CONFIG secret is not configured."
+            echo "Skipping Fedora COPR cloud submission while preserving generated SRPM artifact."
+          fi
